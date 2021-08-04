@@ -29,7 +29,7 @@ import { translate } from "../../i18n"
 import { MAIN_QUERY } from "../../graphql/query"
 import { color } from "../../theme"
 import { palette } from "../../theme/palette"
-import { Token } from "../../utils/token"
+import useToken from "../../utils/use-token"
 import { toastShow } from "../../utils/toast"
 import { addDeviceToken } from "../../utils/notifications"
 import BiometricWrapper from "../../utils/biometricAuthentication"
@@ -176,6 +176,7 @@ export const WelcomePhoneValidationScreenDataInjected: ScreenType = ({
   navigation,
 }: WelcomePhoneValidationScreenDataInjectedProps) => {
   const client = useApolloClient()
+  const { saveToken, hasToken } = useToken()
 
   const [login, { loading, error }] = useMutation(LOGIN, {
     fetchPolicy: "no-cache",
@@ -187,7 +188,7 @@ export const WelcomePhoneValidationScreenDataInjected: ScreenType = ({
 
   const onSuccess = async ({ token }) => {
     analytics().logLogin({ method: "phone" })
-    await new Token().save(token)
+    await saveToken(token)
 
     // TODO refactor from mst-gql to apollo client
     // sync the earned quizzes
@@ -196,7 +197,7 @@ export const WelcomePhoneValidationScreenDataInjected: ScreenType = ({
 
     // console.log("succesfully update earns id")
 
-    reloadMainQuery({ variables: { logged: new Token().has() } })
+    reloadMainQuery({ variables: { logged: hasToken } })
 
     console.log("sending device token for notifications")
     addDeviceToken(client)

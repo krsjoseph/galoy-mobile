@@ -9,7 +9,7 @@ import { QUERY_EARN_LIST } from "../../graphql/query"
 import { translate, translateQuizSections } from "../../i18n"
 import { color } from "../../theme"
 import { palette } from "../../theme/palette"
-import { Token } from "../../utils/token"
+import useToken from "../../utils/use-token"
 import { sectionCompletedPct } from "../earns-screen"
 import BitcoinCircle from "./bitcoin-circle-01.svg"
 import BottomOngoing from "./bottom-ongoing-01.svg"
@@ -128,7 +128,7 @@ export const EarnMapDataInjected: ScreenType = ({ navigation }: EarnMapDataProps
   // TODO: fragment with earnList
   const { data } = useQuery(QUERY_EARN_LIST, {
     variables: {
-      logged: new Token().has(),
+      logged: hasToken(),
     },
     fetchPolicy: "cache-only",
   })

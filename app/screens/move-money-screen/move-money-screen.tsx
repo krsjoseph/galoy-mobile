@@ -30,7 +30,7 @@ import { color } from "../../theme"
 import { palette } from "../../theme/palette"
 import { AccountType, CurrencyType } from "../../utils/enum"
 import { isIos } from "../../utils/helper"
-import { Token } from "../../utils/token"
+import useToken from "../../utils/use-token"
 import type { ScreenType } from "../../types/jsx"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { MoveMoneyStackParamList } from "../../navigation/stack-param-lists"
@@ -128,6 +128,7 @@ export const MoveMoneyScreenDataInjected: ScreenType = ({
   navigation,
 }: MoveMoneyScreenDataInjectedProps) => {
   const client = useApolloClient()
+  const { hasToken } = useToken()
 
   const {
     loading: loadingMain,
@@ -136,7 +137,7 @@ export const MoveMoneyScreenDataInjected: ScreenType = ({
     refetch,
   } = useQuery(MAIN_QUERY, {
     variables: {
-      logged: new Token().has(),
+      logged: hasToken(),
     },
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",

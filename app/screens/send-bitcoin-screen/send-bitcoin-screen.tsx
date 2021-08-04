@@ -30,7 +30,7 @@ import type { ScreenType } from "../../types/jsx"
 import { textCurrencyFormatting } from "../../utils/currencyConversion"
 import { IPaymentType, validPayment } from "../../utils/parsing"
 import { sleep } from "../../utils/sleep"
-import { Token } from "../../utils/token"
+import useToken from "../../utils/use-token"
 import { UsernameValidation } from "../../utils/validation"
 
 const successLottie = require("../move-money-screen/success_lottie.json")
@@ -157,6 +157,7 @@ export const SendBitcoinScreen: React.FC<SendBitcoinScreenProps> = ({
 }: SendBitcoinScreenProps) => {
   const client = useApolloClient()
   const { goBack } = useNavigation()
+  const { getTokenNetwork } = useToken()
 
   const [errs, setErrs] = useState([])
   const [invoiceError, setInvoiceError] = useState("")
@@ -239,7 +240,8 @@ export const SendBitcoinScreen: React.FC<SendBitcoinScreenProps> = ({
 
   const balance = balanceBtc(client)
 
-  const { network } = new Token()
+  const network = getTokenNetwork()
+
   const potentialBitcoinOrLightning = regexFilter(network)?.test(destination) ?? false
 
   const reset = useCallback(() => {

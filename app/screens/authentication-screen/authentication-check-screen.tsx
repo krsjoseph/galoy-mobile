@@ -13,6 +13,7 @@ import { AuthenticationScreenPurpose, PinScreenPurpose } from "../../utils/enum"
 import { showModalClipboardIfValidPayment } from "../../utils/clipboard"
 import type { RootStackParamList } from "../../navigation/stack-param-lists"
 import { StackNavigationProp } from "@react-navigation/stack"
+import useToken from "../../utils/use-token"
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const BitcoinBeachLogo = require("../get-started-screen/bitcoinBeach3.png")
@@ -37,6 +38,7 @@ type Props = {
 
 export const AuthenticationCheckScreen: ScreenType = ({ navigation }: Props) => {
   const client = useApolloClient()
+  const { getTokenNetwork } = useToken()
 
   useEffect(() => {
     ;(async () => {
@@ -54,10 +56,10 @@ export const AuthenticationCheckScreen: ScreenType = ({ navigation }: Props) => 
         navigation.replace("pin", { screenPurpose: PinScreenPurpose.AuthenticatePin })
       } else {
         navigation.replace("Primary")
-        showModalClipboardIfValidPayment(client)
+        showModalClipboardIfValidPayment({ client, network: getTokenNetwork() })
       }
     })()
-  }, [client, navigation])
+  }, [client, getTokenNetwork, navigation])
 
   return (
     <Screen

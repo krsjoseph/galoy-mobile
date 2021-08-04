@@ -14,7 +14,7 @@ import { color } from "../../theme"
 import { palette } from "../../theme/palette"
 import type { ComponentType } from "../../types/jsx"
 import { validPayment } from "../../utils/parsing"
-import { Token } from "../../utils/token"
+import useToken from "../../utils/use-token"
 import { LAST_CLIPBOARD_PAYMENT } from "../../graphql/client-only-query"
 import { cache } from "../../graphql/cache"
 
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
 export const ModalClipboard: ComponentType = () => {
   const client = useApolloClient()
   const navigation = useNavigation()
+  const { getTokenNetwork } = useToken()
 
   const open = async () => {
     modalClipboardVisibleVar(false)
@@ -100,14 +101,14 @@ export const ModalClipboard: ComponentType = () => {
 
     ;(async () => {
       const clipboard = await Clipboard.getString()
-      const { paymentType } = validPayment(clipboard, new Token().network, client)
+      const { paymentType } = validPayment(clipboard, getTokenNetwork(), client)
       const pathString =
         paymentType === "lightning"
           ? "ModalClipboard.pendingInvoice"
           : "ModalClipboard.pendingBitcoin"
       setMessage(translate(pathString))
     })()
-  }, [client, isVisible])
+  }, [client, isVisible, getTokenNetwork])
 
   return (
     <Modal

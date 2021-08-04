@@ -7,9 +7,9 @@ import { useApolloClient } from "@apollo/client"
 import { Screen } from "../../components/screen"
 import { color } from "../../theme"
 import { resetDataStore } from "../../utils/logout"
-import { loadNetwork, saveNetwork } from "../../utils/network"
+import { getGraphQlUri, loadNetwork, saveNetwork } from "../../utils/network"
 import { requestPermission } from "../../utils/notifications"
-import { getGraphQlUri, Token } from "../../utils/token"
+import useToken from "../../utils/use-token"
 import { btc_price, walletIsActive } from "../../graphql/query"
 
 import type { ScreenType } from "../../types/jsx"
@@ -26,9 +26,7 @@ const styles = EStyleSheet.create({
 
 export const DebugScreen: ScreenType = () => {
   const client = useApolloClient()
-  const token = useMemo(() => {
-    return new Token()
-  }, [])
+  const { getTokenUid, getTokenNetwork, removeToken } = useToken()
 
   const networks: INetwork[] = ["regtest", "testnet", "mainnet"]
   const [networkState, setNetworkState] = React.useState("")
@@ -38,18 +36,20 @@ export const DebugScreen: ScreenType = () => {
     async (network?) => {
       let n
 
-      if (token.network) {
-        n = token.network
+      const tokenNetwork = getTokenNetwork()
+
+      if (tokenNetwork) {
+        n = tokenNetwork
       } else if (!network) {
         n = await loadNetwork()
       } else {
         n = network
       }
 
-      setGraphQlUri(await getGraphQlUri())
+      setGraphQlUri(await getGraphQlUri(n))
       setNetworkState(n)
     },
-    [token],
+    [getTokenNetwork],
   )
 
   React.useEffect(() => {
@@ -84,7 +84,7 @@ export const DebugScreen: ScreenType = () => {
         title="Log out"
         style={styles.button}
         onPress={async () => {
-          await resetDataStore(client)
+          await resetDataStore({ client, removeToken })
           Alert.alert("state succesfully deleted. Restart your app")
         }}
       />
@@ -129,11 +129,11 @@ export const DebugScreen: ScreenType = () => {
       <View>
         <Text>
           UID:
-          {token.uid}
+          {getTokenUid()}
         </Text>
         <Text>
           token network:
-          {token.network}
+          {getTokenNetwork()}
         </Text>
         <Text>
           GraphQlUri:

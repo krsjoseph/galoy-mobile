@@ -12,7 +12,7 @@ import { translate } from "../../i18n"
 import { palette } from "../../theme/palette"
 import type { ScreenType } from "../../types/jsx"
 import { validPayment } from "../../utils/parsing"
-import { Token } from "../../utils/token"
+import useToken from "../../utils/use-token"
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const LocalQRCode = require("@remobile/react-native-qrcode-local-image")
@@ -67,6 +67,7 @@ export const ScanningQRCodeScreen: ScreenType = () => {
   const { navigate, goBack } = useNavigation()
   const [pending, setPending] = React.useState(false)
   const client = useApolloClient()
+  const { getTokenNetwork } = useToken()
 
   const decodeInvoice = async (data) => {
     if (pending) {
@@ -74,7 +75,7 @@ export const ScanningQRCodeScreen: ScreenType = () => {
     }
 
     try {
-      const { valid, errorMessage } = validPayment(data, new Token().network, client)
+      const { valid, errorMessage } = validPayment(data, getTokenNetwork(), client)
       console.log({ valid, errorMessage, data }, "result")
       if (valid) {
         navigate("sendBitcoin", { payment: data })
