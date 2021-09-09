@@ -531,7 +531,10 @@
     "pinDescription": "PIN is used as the backup authentication method for biometric authentication.",
     "pinSubtitle": "Enable PIN",
     "pinTitle": "PIN Code",
-    "setPin": "Set PIN"
+    "setPin": "Set PIN",
+    "twoFADescription": "Payments that exceed 300,000 sats within a 24 hour period will require a 2FA code.",
+    "twoFASubtitle": "Enable two factor authentication",
+    "twoFATitle": "2FA"
   },
   "SendBitcoinScreen": {
     "amount": "Amount",
@@ -567,6 +570,9 @@
     "noTransaction": "No transaction to show",
     "title": "Transactions",
     "transactionHistoryTitle": "Transaction History"
+  },
+  "TwoFactorAuthenticationScreen": {
+
   },
   "UsernameScreen": {
     "3CharactersMinimum": "at least 3 characters are necessary",

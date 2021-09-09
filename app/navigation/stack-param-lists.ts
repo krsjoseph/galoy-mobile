@@ -43,6 +43,7 @@ export type RootStackParamList = {
     tx: query_transactions_wallet_transactions
   }
   transactionHistory: undefined
+  twoFactorAuthentication: undefined
   Earn: undefined
 }
 
